@@ -449,7 +449,7 @@ class Ui_Form(object):
 def listwidget_del(listwidget):
     delete_row = []
 
-    # TODO For 2번사용한것 수정필요
+    # TODO For 2번사용한것 수정필요함
     for listitem in listwidget.selectedIndexes():
         delete_row.append(listitem.row())
     delete_row.sort(reverse=True)
@@ -462,6 +462,7 @@ def selected_listitem(listwidget, selected_item):
         matching_items = listwidget.findItems(i, QtCore.Qt.MatchExactly)
         for item in matching_items:
             item.setSelected(True)
+            
 
 
 if __name__ == "__main__":
