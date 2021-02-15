@@ -448,7 +448,7 @@ class Ui_Form(object):
 def listwidget_del(listwidget):
     delete_row = []
 
-    # TODO For 2번사용한것 수정필요함
+    # TODO For 2번사용한것 수정필요
     for listitem in listwidget.selectedIndexes():
         delete_row.append(listitem.row())
     delete_row.sort(reverse=True)
