@@ -92,6 +92,35 @@ def sync_smi(file_name, delay):
     f.close()
 
 
+def sync_specify_smi(file_name, delay):
+    f, pre_tell, read_data = file_open_utf(file_name)
+    while read_data:
+        p = re.compile(r'(<Sync Start=)(\d+)(.+)')
+        m = p.match(read_data)
+        try:
+            file_time = int(m.group(2))
+            change_time = file_time + delay
+            print(file_time, change_time)
+
+            change_data = []
+            for i, insert_data in enumerate(m.groups()):
+                if i == 1:
+                    change_data.append(change_time)
+                else:
+                    change_data.append(insert_data)
+
+            result_str = ''.join(map(str, change_data))
+            f.seek(pre_tell, 0)
+            f.write(result_str)
+
+        except AttributeError:
+            pass
+
+        pre_tell = f.tell()
+        read_data = f.readline()
+    f.close()
+
+
 def select_file_ext(file, delay, ext):
     if ext == ".ass":
         sync_ass(file, delay)
