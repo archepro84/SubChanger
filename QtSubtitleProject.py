@@ -365,9 +365,10 @@ class Ui_Form(object):
         # rbtn check
         self.rbtn_all_change.setChecked(True)
 
-        self.timeedit_start.setDisplayFormat("hh:mm:ss")
-        self.timeedit_end.setDisplayFormat("hh:mm:ss")
-        self.timeedit_end.setTime(QtCore.QTime(0, 24, 00))
+        # document : https://doc.qt.io/qt-5/qdatetime.html#toString-4
+        self.timeedit_start.setDisplayFormat("hh:mm:ss.zzz")
+        self.timeedit_end.setDisplayFormat("hh:mm:ss.zzz")
+        self.timeedit_end.setTime(QtCore.QTime(0, 24, 00, 00))
         self.timeedit_start.setEnabled(False)
         self.timeedit_end.setEnabled(False)
         self.le_sync_time_delay.setEnabled(True)
@@ -421,6 +422,12 @@ class Ui_Form(object):
                     print("Clear Start Event")
             except ValueError:
                 print("Time Delay ValueError")
+        elif self.rbtn_specify_Change.isChecked():
+            print(self.timeedit_end.time().hour())
+            print(self.timeedit_end.time().minute())
+            print(self.timeedit_end.time().second())
+            print(self.timeedit_end.time().msec())
+            print("rbtn specify Checked")
 
     def rbtn_all_change_onclick(self):
         print("rbtn all Change on Click")

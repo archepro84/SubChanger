@@ -29,7 +29,7 @@ def file_open_utf(file_name):
     return f, pre_tell, read_data
 
 
-def sync_ass(file_name, delay):
+def sync_ass(file_name, delay, start_time=None, end_time=None):
     f, pre_tell, read_data = file_open_utf(file_name)
     while read_data:
         p = re.compile(r'(Dialogue: 0,)(\d:\d{2}:\d{2}.\d{2})(,)(\d:\d{2}:\d{2}.\d{2})(.+)')
@@ -64,7 +64,7 @@ def sync_ass(file_name, delay):
     f.close()
 
 
-def sync_smi(file_name, delay):
+def sync_smi(file_name, delay, start_time=None, end_time=None):
     f, pre_tell, read_data = file_open_utf(file_name)
     while read_data:
         p = re.compile(r'(<Sync Start=)(\d+)(.+)')
@@ -72,6 +72,13 @@ def sync_smi(file_name, delay):
         try:
             file_time = int(m.group(2))
             change_time = file_time + delay
+            if change_time < 0:
+                change_time = 0
+
+            if start_time and end_time:
+                if not (start_time <= file_time <= end_time):
+                    # TODO smi의 end_time 이후 &nbsp;만이 단독으로 delay되지 않는다면? (자막이 지워지지 않고 연속 출력되는현상 발생)
+                    change_time = file_time
 
             change_data = []
             for i, insert_data in enumerate(m.groups()):
@@ -90,45 +97,11 @@ def sync_smi(file_name, delay):
         pre_tell = f.tell()
         read_data = f.readline()
     f.close()
-
-
-def sync_specify_smi(file_name, delay):
-    f, pre_tell, read_data = file_open_utf(file_name)
-    while read_data:
-        p = re.compile(r'(<Sync Start=)(\d+)(.+)')
-        m = p.match(read_data)
-        try:
-            file_time = int(m.group(2))
-            change_time = file_time + delay
-            print(file_time, change_time)
-
-            change_data = []
-            for i, insert_data in enumerate(m.groups()):
-                if i == 1:
-                    change_data.append(change_time)
-                else:
-                    change_data.append(insert_data)
-
-            result_str = ''.join(map(str, change_data))
-            f.seek(pre_tell, 0)
-            f.write(result_str)
-
-        except AttributeError:
-            pass
-
-        pre_tell = f.tell()
-        read_data = f.readline()
-    f.close()
-
-
-def select_file_ext(file, delay, ext):
-    if ext == ".ass":
-        sync_ass(file, delay)
-    elif ext == ".smi":
-        sync_smi(file, delay)
 
 
 def main_cc(file, delay, logstat, time_start=None, time_end=None):
+    select_stat = True
+
     if logstat and (not os.path.exists(log_folder_name)):
         os.mkdir(log_folder_name)
 
@@ -140,8 +113,12 @@ def main_cc(file, delay, logstat, time_start=None, time_end=None):
                 log_file = os.path.join(log_folder_name, file)
                 if not os.path.exists(log_file):
                     shutil.copy2(file, log_file)
-                    select_file_ext(file, delay, ext)
                 else:
                     print("이미 존재하는 로그 파일입니다. \n덮어 쓰시겠습니까?")
-            else:
-                select_file_ext(file, delay, ext)
+                    if not select_stat:
+                        return
+
+            if ext == ".ass":
+                sync_ass(file, delay, time_start, time_end)
+            elif ext == ".smi":
+                sync_smi(file, delay, time_start, time_end)
