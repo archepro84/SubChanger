@@ -8,6 +8,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import qtmodern.styles
 import qtmodern.windows
 import myNote.SubChanger.caption_change as cc
+import myNote.SubChanger.time_lib as tl
 
 movie_list = [".avi", ".mkv", ".mp4"]
 caption_list = [".smi", ".ass"]
@@ -114,6 +115,12 @@ class Ui_Form(object):
         self.btn_tab1_file_del.setAutoDefault(False)
         self.btn_tab1_file_del.setObjectName("btn_tab1_file_del")
         self.vbox_file_btn_layout.addWidget(self.btn_tab1_file_del)
+        self.btn_tab1_file_sort = QtWidgets.QPushButton(self.verticalLayoutWidget_3)
+        self.btn_tab1_file_sort.setSizePolicy(sizePolicy)
+        self.btn_tab1_file_sort.setFont(font)
+        self.btn_tab1_file_sort.setAutoDefault(False)
+        self.btn_tab1_file_sort.setObjectName("btn_tab1_file_sort")
+        self.vbox_file_btn_layout.addWidget(self.btn_tab1_file_sort)
         self.horizontalLayout_10.addLayout(self.vbox_file_btn_layout)
         self.verticalLayout_8.addLayout(self.horizontalLayout_10)
         self.horizontalLayout.addLayout(self.verticalLayout_8)
@@ -176,6 +183,13 @@ class Ui_Form(object):
         self.btn_tab1_caption_del.setAutoDefault(False)
         self.btn_tab1_caption_del.setObjectName("btn_tab1_caption_del")
         self.vbox_caption_btn_layout.addWidget(self.btn_tab1_caption_del)
+
+        self.btn_tab1_caption_sort = QtWidgets.QPushButton(self.verticalLayoutWidget_3)
+        self.btn_tab1_caption_sort.setSizePolicy(sizePolicy)
+        self.btn_tab1_caption_sort.setFont(font)
+        self.btn_tab1_caption_sort.setAutoDefault(False)
+        self.btn_tab1_caption_sort.setObjectName("btn_tab1_caption_sort")
+        self.vbox_caption_btn_layout.addWidget(self.btn_tab1_caption_sort)
         self.horizontalLayout_11.addLayout(self.vbox_caption_btn_layout)
         self.verticalLayout_7.addLayout(self.horizontalLayout_11)
         self.horizontalLayout.addLayout(self.verticalLayout_7)
@@ -309,10 +323,12 @@ class Ui_Form(object):
         self.btn_file_up.setText(_translate("Form", "Up"))
         self.btn_file_down.setText(_translate("Form", "Down"))
         self.btn_tab1_file_del.setText(_translate("Form", "Del"))
+        self.btn_tab1_file_sort.setText(_translate("Form", "Sort"))
         self.label_2.setText(_translate("Form", "자막 파일(ass, smi)"))
         self.btn_caption_up.setText(_translate("Form", "Up"))
         self.btn_caption_down.setText(_translate("Form", "Down"))
         self.btn_tab1_caption_del.setText(_translate("Form", "Del"))
+        self.btn_tab1_caption_sort.setText(_translate("Form", "Sort"))
         self.btn_start.setText(_translate("Form", "시작"))
         self.btn_restore.setText(_translate("Form", "복원"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("Form", "파일명"))
@@ -369,6 +385,8 @@ class Ui_Form(object):
         self.timeedit_start.setDisplayFormat("hh:mm:ss.zzz")
         self.timeedit_end.setDisplayFormat("hh:mm:ss.zzz")
         self.timeedit_end.setTime(QtCore.QTime(0, 24, 00, 00))
+        # self.timeedit_end.setTime(QtCore.QTime(11, 22, 33, 444))
+
         self.timeedit_start.setEnabled(False)
         self.timeedit_end.setEnabled(False)
         self.le_sync_time_delay.setEnabled(True)
@@ -378,8 +396,9 @@ class Ui_Form(object):
     def custom_control_code(self):
         """Tab File Name """
         self.btn_file_folder.clicked.connect(self.btn_folder_onclick)
-        self.btn_tab1_caption_del.clicked.connect(self.btn_tab1_caption_del_onclick)
         self.btn_tab1_file_del.clicked.connect(self.btn_tab1_file_del_onclick)
+
+        self.btn_tab1_caption_del.clicked.connect(self.btn_tab1_caption_del_onclick)
 
         """Tab Caption Sync"""
         self.btn_sync_folder.clicked.connect(self.btn_folder_onclick)
@@ -414,30 +433,28 @@ class Ui_Form(object):
 
     def btn_sync_start_onclick(self):
         if self.rbtn_all_change.isChecked():
-            try:
-                timedelay = int(self.le_sync_time_delay.text())
-                for listitem in self.listwidget_sync_caption.selectedItems():
-                    print(listitem.text())
-                    cc.main_cc(listitem.text(), timedelay, False)
-                    print("Clear Start Event")
-            except ValueError:
-                print("Time Delay ValueError")
+            timedelay = int(self.le_sync_time_delay.text())
+            for listitem in self.listwidget_sync_caption.selectedItems():
+                print(listitem.text())
+                cc.main_cc(listitem.text(), timedelay, False)
+                print("Clear Start Event")
         elif self.rbtn_specify_Change.isChecked():
-            print(self.timeedit_end.time().hour())
-            print(self.timeedit_end.time().minute())
-            print(self.timeedit_end.time().second())
-            print(self.timeedit_end.time().msec())
-            print("rbtn specify Checked")
+            start_time = tl.time_to_msec(self.timeedit_start.time().toPyTime())
+            end_time = tl.time_to_msec(self.timeedit_end.time().toPyTime())
+
+            timedelay = int(self.le_sync_time_delay.text())
+            for listitem in self.listwidget_sync_caption.selectedItems():
+                print(listitem.text())
+                cc.main_cc(listitem.text(), timedelay, False, start_time, end_time)
+                print("Clear Start Event")
 
     def rbtn_all_change_onclick(self):
         print("rbtn all Change on Click")
-        self.le_sync_time_delay.setEnabled(True)
         self.timeedit_start.setEnabled(False)
         self.timeedit_end.setEnabled(False)
 
     def rbtn_specify_change_onclick(self):
         print("rbtn specify Change on Click")
-        self.le_sync_time_delay.setEnabled(False)
         self.timeedit_start.setEnabled(True)
         self.timeedit_end.setEnabled(True)
 

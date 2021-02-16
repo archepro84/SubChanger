@@ -10,6 +10,7 @@ import datetime
 import re
 import os
 import shutil
+import myNote.SubChanger.time_lib as tl
 
 log_folder_name = "pre_log"
 
@@ -32,10 +33,19 @@ def file_open_utf(file_name):
 def sync_ass(file_name, delay, start_time=None, end_time=None):
     f, pre_tell, read_data = file_open_utf(file_name)
     while read_data:
-        p = re.compile(r'(Dialogue: 0,)(\d:\d{2}:\d{2}.\d{2})(,)(\d:\d{2}:\d{2}.\d{2})(.+)')
+        p = re.compile(r'(Dialogue: \d,)(\d:\d{2}:\d{2}.\d{2})(,)(\d:\d{2}:\d{2}.\d{2})(.+)')
         m = p.match(read_data)
         try:
             change_str = []
+            # TODO 1번의 불필요한 변환이 존재함 수정이 필요.
+            if start_time and end_time:
+                if not (start_time <=
+                        tl.time_to_msec(datetime.datetime.strptime(m.group(2), r"%H:%M:%S.%f"))
+                        <= end_time):
+                    pre_tell = f.tell()
+                    read_data = f.readline()
+                    continue
+
             for i in range(2, 5, 2):
                 dt_time = datetime.datetime.strptime(m.group(i), r"%H:%M:%S.%f")
                 sec_delay, mic_delay = divmod(delay, 1000)
@@ -78,6 +88,7 @@ def sync_smi(file_name, delay, start_time=None, end_time=None):
             if start_time and end_time:
                 if not (start_time <= file_time <= end_time):
                     # TODO smi의 end_time 이후 &nbsp;만이 단독으로 delay되지 않는다면? (자막이 지워지지 않고 연속 출력되는현상 발생)
+                    # 부분수정으로인한 자막의 오류발생은 어떻게 처리해야하는가?
                     change_time = file_time
 
             change_data = []
