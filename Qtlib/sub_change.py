@@ -10,7 +10,7 @@ import datetime
 import re
 import os
 import shutil
-import myNote.SubChanger.time_lib as tl
+from myNote.SubChanger.Qtlib.time_lib import *
 
 log_folder_name = "pre_log"
 
@@ -40,7 +40,7 @@ def sync_ass(file_name, delay, start_time=None, end_time=None):
             # TODO 1번의 불필요한 변환이 존재함 수정이 필요.
             if start_time and end_time:
                 if not (start_time <=
-                        tl.time_to_msec(datetime.datetime.strptime(m.group(2), r"%H:%M:%S.%f"))
+                        time_to_msec(datetime.datetime.strptime(m.group(2), r"%H:%M:%S.%f"))
                         <= end_time):
                     pre_tell = f.tell()
                     read_data = f.readline()
@@ -108,6 +108,20 @@ def sync_smi(file_name, delay, start_time=None, end_time=None):
         pre_tell = f.tell()
         read_data = f.readline()
     f.close()
+
+
+# TODO Log 저장시 파일을 저장하는게 아닌 이름변경 기록을 txt형태로 저장하여 관리
+# TODO 중복된 이름 발생시 발생하는 오류 제거
+def filename_change(start_name, end_name, logstat=False):
+    # print(start_name, end_name)
+
+    if logstat and (not os.path.exists(log_folder_name)):
+        os.mkdir(log_folder_name)
+
+    if os.path.isfile(start_name):
+        _, ext = os.path.splitext(start_name)
+        end_file_name, _ = os.path.splitext(end_name)
+        os.rename(start_name, end_file_name + ext)
 
 
 def main_cc(file, delay, logstat, time_start=None, time_end=None):

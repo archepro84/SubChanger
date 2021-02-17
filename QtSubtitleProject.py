@@ -1,14 +1,11 @@
-"""
- 
-
-"""
 import sys
 import os
 from PyQt5 import QtCore, QtGui, QtWidgets
 import qtmodern.styles
 import qtmodern.windows
-import myNote.SubChanger.caption_change as cc
-import myNote.SubChanger.time_lib as tl
+
+from myNote.SubChanger.Qtlib.sub_change import *
+from myNote.SubChanger.Qtlib.time_lib import *
 
 movie_list = [".avi", ".mkv", ".mp4"]
 caption_list = [".smi", ".ass"]
@@ -20,6 +17,12 @@ default_timedelay = 1000
 default_location = r"C:\PythonProject\myNote\SubChanger\caption_file"
 
 test_item_name = ["페아포 1화.ass", "페아포 10화.ass", "페아포 11화.ass", "페아포 12화.ass"]
+
+log_stat = False
+sort_stat = False
+
+# document : https://docs.python.org/ko/3/reference/import.html#__package__
+
 
 try:
     os.chdir(default_location)
@@ -48,10 +51,10 @@ class Ui_Form(object):
         self.le_file_location = QtWidgets.QLineEdit(self.verticalLayoutWidget_3)
         self.le_file_location.setObjectName("le_file_location")
         self.horizontalLayout_3.addWidget(self.le_file_location)
-        self.btn_file_folder = QtWidgets.QPushButton(self.verticalLayoutWidget_3)
-        self.btn_file_folder.setText("")
-        self.btn_file_folder.setObjectName("btn_file_folder")
-        self.horizontalLayout_3.addWidget(self.btn_file_folder)
+        self.btn_tab1_file_folder = QtWidgets.QPushButton(self.verticalLayoutWidget_3)
+        self.btn_tab1_file_folder.setText("")
+        self.btn_tab1_file_folder.setObjectName("btn_tab1_file_folder")
+        self.horizontalLayout_3.addWidget(self.btn_tab1_file_folder)
         self.verticalLayout_4.addLayout(self.horizontalLayout_3)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setContentsMargins(15, 10, 15, 10)
@@ -70,36 +73,36 @@ class Ui_Form(object):
         self.vbox_file_btn_layout.setSizeConstraint(QtWidgets.QLayout.SetDefaultConstraint)
         self.vbox_file_btn_layout.setContentsMargins(15, 0, 15, 10)
         self.vbox_file_btn_layout.setObjectName("verticalLayout")
-        self.btn_file_up = QtWidgets.QPushButton(self.verticalLayoutWidget_3)
+        self.btn_tab1_file_up = QtWidgets.QPushButton(self.verticalLayoutWidget_3)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(10)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.btn_file_up.sizePolicy().hasHeightForWidth())
-        self.btn_file_up.setSizePolicy(sizePolicy)
+        sizePolicy.setHeightForWidth(self.btn_tab1_file_up.sizePolicy().hasHeightForWidth())
+        self.btn_tab1_file_up.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(11)
         font.setBold(True)
         font.setWeight(75)
-        self.btn_file_up.setFont(font)
-        self.btn_file_up.setAutoDefault(False)
-        self.btn_file_up.setObjectName("btn_file_up")
-        self.vbox_file_btn_layout.addWidget(self.btn_file_up)
-        self.btn_file_down = QtWidgets.QPushButton(self.verticalLayoutWidget_3)
+        self.btn_tab1_file_up.setFont(font)
+        self.btn_tab1_file_up.setAutoDefault(False)
+        self.btn_tab1_file_up.setObjectName("btn_tab1_file_up")
+        self.vbox_file_btn_layout.addWidget(self.btn_tab1_file_up)
+        self.btn_tab1_file_down = QtWidgets.QPushButton(self.verticalLayoutWidget_3)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(10)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.btn_file_down.sizePolicy().hasHeightForWidth())
-        self.btn_file_down.setSizePolicy(sizePolicy)
+        sizePolicy.setHeightForWidth(self.btn_tab1_file_down.sizePolicy().hasHeightForWidth())
+        self.btn_tab1_file_down.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(11)
         font.setBold(True)
         font.setWeight(75)
-        self.btn_file_down.setFont(font)
-        self.btn_file_down.setAutoDefault(False)
-        self.btn_file_down.setObjectName("btn_file_down")
-        self.vbox_file_btn_layout.addWidget(self.btn_file_down)
+        self.btn_tab1_file_down.setFont(font)
+        self.btn_tab1_file_down.setAutoDefault(False)
+        self.btn_tab1_file_down.setObjectName("btn_tab1_file_down")
+        self.vbox_file_btn_layout.addWidget(self.btn_tab1_file_down)
         self.btn_tab1_file_del = QtWidgets.QPushButton(self.verticalLayoutWidget_3)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(10)
@@ -196,24 +199,24 @@ class Ui_Form(object):
         self.verticalLayout_4.addLayout(self.horizontalLayout)
         self.hbox_namechanger_btn_layout = QtWidgets.QHBoxLayout()
         self.hbox_namechanger_btn_layout.setObjectName("hbox_namechanger_btn_layout")
-        self.btn_start = QtWidgets.QPushButton(self.verticalLayoutWidget_3)
+        self.btn_tab1_start = QtWidgets.QPushButton(self.verticalLayoutWidget_3)
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(9)
         # font.setBold(True)
         font.setWeight(75)
-        self.btn_start.setFont(font)
-        self.btn_start.setObjectName("btn_start")
-        self.hbox_namechanger_btn_layout.addWidget(self.btn_start)
-        self.btn_restore = QtWidgets.QPushButton(self.verticalLayoutWidget_3)
+        self.btn_tab1_start.setFont(font)
+        self.btn_tab1_start.setObjectName("btn_tab1_start")
+        self.hbox_namechanger_btn_layout.addWidget(self.btn_tab1_start)
+        self.btn_tab1_restore = QtWidgets.QPushButton(self.verticalLayoutWidget_3)
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(9)
         # font.setBold(True)
         font.setWeight(75)
-        self.btn_restore.setFont(font)
-        self.btn_restore.setObjectName("btn_restore")
-        self.hbox_namechanger_btn_layout.addWidget(self.btn_restore)
+        self.btn_tab1_restore.setFont(font)
+        self.btn_tab1_restore.setObjectName("btn_tab1_restore")
+        self.hbox_namechanger_btn_layout.addWidget(self.btn_tab1_restore)
         self.verticalLayout_4.addLayout(self.hbox_namechanger_btn_layout)
         self.tabWidget.addTab(self.tab, "")
         self.tab_2 = QtWidgets.QWidget()
@@ -230,10 +233,10 @@ class Ui_Form(object):
         self.le_sync_location = QtWidgets.QLineEdit(self.verticalLayoutWidget)
         self.le_sync_location.setObjectName("le_sync_location")
         self.horizontalLayout_8.addWidget(self.le_sync_location)
-        self.btn_sync_folder = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        self.btn_sync_folder.setText("")
-        self.btn_sync_folder.setObjectName("btn_sync_folder")
-        self.horizontalLayout_8.addWidget(self.btn_sync_folder)
+        self.btn_tab2_sync_folder = QtWidgets.QPushButton(self.verticalLayoutWidget)
+        self.btn_tab2_sync_folder.setText("")
+        self.btn_tab2_sync_folder.setObjectName("btn_tab2_sync_folder")
+        self.horizontalLayout_8.addWidget(self.btn_tab2_sync_folder)
         self.verticalLayout_5.addLayout(self.horizontalLayout_8)
         self.horizontalLayout_9 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_9.setContentsMargins(5, 5, 5, 5)
@@ -266,12 +269,12 @@ class Ui_Form(object):
         self.horizontalLayout_7 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_7.setContentsMargins(5, -1, -1, -1)
         self.horizontalLayout_7.setObjectName("horizontalLayout_7")
-        self.rbtn_all_change = QtWidgets.QRadioButton(self.verticalLayoutWidget)
-        self.rbtn_all_change.setObjectName("rbtn_all_change")
-        self.horizontalLayout_7.addWidget(self.rbtn_all_change)
-        self.rbtn_specify_Change = QtWidgets.QRadioButton(self.verticalLayoutWidget)
-        self.rbtn_specify_Change.setObjectName("rbtn_specify_Change")
-        self.horizontalLayout_7.addWidget(self.rbtn_specify_Change)
+        self.rbtn_tab2_all_change = QtWidgets.QRadioButton(self.verticalLayoutWidget)
+        self.rbtn_tab2_all_change.setObjectName("rbtn_tab2_all_change")
+        self.horizontalLayout_7.addWidget(self.rbtn_tab2_all_change)
+        self.rbtn_tab2_specify_Change = QtWidgets.QRadioButton(self.verticalLayoutWidget)
+        self.rbtn_tab2_specify_Change.setObjectName("rbtn_tab2_specify_Change")
+        self.horizontalLayout_7.addWidget(self.rbtn_tab2_specify_Change)
         self.vbox_sync_control_layout.addLayout(self.horizontalLayout_7)
         self.horizontalLayout_12 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_12.setObjectName("horizontalLayout_12")
@@ -320,8 +323,8 @@ class Ui_Form(object):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
         self.label.setText(_translate("Form", "비디오 파일(avi, mp4, mkv)"))
-        self.btn_file_up.setText(_translate("Form", "Up"))
-        self.btn_file_down.setText(_translate("Form", "Down"))
+        self.btn_tab1_file_up.setText(_translate("Form", "Up"))
+        self.btn_tab1_file_down.setText(_translate("Form", "Down"))
         self.btn_tab1_file_del.setText(_translate("Form", "Del"))
         self.btn_tab1_file_sort.setText(_translate("Form", "Sort"))
         self.label_2.setText(_translate("Form", "자막 파일(ass, smi)"))
@@ -329,13 +332,13 @@ class Ui_Form(object):
         self.btn_caption_down.setText(_translate("Form", "Down"))
         self.btn_tab1_caption_del.setText(_translate("Form", "Del"))
         self.btn_tab1_caption_sort.setText(_translate("Form", "Sort"))
-        self.btn_start.setText(_translate("Form", "시작"))
-        self.btn_restore.setText(_translate("Form", "복원"))
+        self.btn_tab1_start.setText(_translate("Form", "시작"))
+        self.btn_tab1_restore.setText(_translate("Form", "복원"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("Form", "파일명"))
         self.label_7.setText(_translate("Form", "자막 파일(ass, smi)"))
         self.btn_tab2_caption_del.setText(_translate("Form", "Del"))
-        self.rbtn_all_change.setText(_translate("Form", "일괄수정"))
-        self.rbtn_specify_Change.setText(_translate("Form", "부분수정"))
+        self.rbtn_tab2_all_change.setText(_translate("Form", "일괄수정"))
+        self.rbtn_tab2_specify_Change.setText(_translate("Form", "부분수정"))
         self.label_3.setText(_translate("Form", "Time Delay"))
         self.label_4.setText(_translate("Form", "시작 : "))
         self.label_5.setText(_translate("Form", "~"))
@@ -347,18 +350,18 @@ class Ui_Form(object):
         self.le_sync_location.setEnabled(False)
         self.hbox_sync_control_layout_control = QtWidgets.QHBoxLayout()
         self.hbox_sync_control_layout_control.setAlignment(QtCore.Qt.AlignRight)
-        self.btn_sync_start = QtWidgets.QPushButton()
+        self.btn_tab2_sync_start = QtWidgets.QPushButton()
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(9)
         font.setWeight(75)
-        self.btn_sync_start.setFont(font)
-        self.btn_sync_start.setText("시작")
-        self.btn_sync_restore = QtWidgets.QPushButton()
-        self.btn_sync_restore.setFont(font)
-        self.btn_sync_restore.setText("복원")
-        self.hbox_sync_control_layout_control.addWidget(self.btn_sync_start)
-        self.hbox_sync_control_layout_control.addWidget(self.btn_sync_restore)
+        self.btn_tab2_sync_start.setFont(font)
+        self.btn_tab2_sync_start.setText("시작")
+        self.btn_tab2_sync_restore = QtWidgets.QPushButton()
+        self.btn_tab2_sync_restore.setFont(font)
+        self.btn_tab2_sync_restore.setText("복원")
+        self.hbox_sync_control_layout_control.addWidget(self.btn_tab2_sync_start)
+        self.hbox_sync_control_layout_control.addWidget(self.btn_tab2_sync_restore)
         self.hbox_sync_control_layout_control.setContentsMargins(0, 15, 0, 0)
         self.vbox_sync_control_layout.addLayout(self.hbox_sync_control_layout_control)
         self.vbox_caption_btn_layout.setAlignment(QtCore.Qt.AlignTop)
@@ -369,8 +372,8 @@ class Ui_Form(object):
         self.vbox_sync_control_layout.setContentsMargins(30, 0, 0, 0)
         self.vbox_sync_control_layout.setAlignment(QtCore.Qt.AlignTop)
         self.label_5.setAlignment(QtCore.Qt.AlignCenter)
-        self.btn_sync_folder.setIcon(QtGui.QIcon(os.path.join("resource", "folder-16.png")))
-        self.btn_file_folder.setIcon(QtGui.QIcon(os.path.join("resource", "folder-16.png")))
+        self.btn_tab2_sync_folder.setIcon(QtGui.QIcon(os.path.join("resource", "folder-16.png")))
+        self.btn_tab1_file_folder.setIcon(QtGui.QIcon(os.path.join("resource", "folder-16.png")))
 
         # ListWidget
         # document : https://doc.qt.io/qt-5/qabstractitemview.html
@@ -379,13 +382,12 @@ class Ui_Form(object):
         self.listwidget_caption.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
 
         # rbtn check
-        self.rbtn_all_change.setChecked(True)
+        self.rbtn_tab2_all_change.setChecked(True)
 
         # document : https://doc.qt.io/qt-5/qdatetime.html#toString-4
         self.timeedit_start.setDisplayFormat("hh:mm:ss.zzz")
         self.timeedit_end.setDisplayFormat("hh:mm:ss.zzz")
         self.timeedit_end.setTime(QtCore.QTime(0, 24, 00, 00))
-        # self.timeedit_end.setTime(QtCore.QTime(11, 22, 33, 444))
 
         self.timeedit_start.setEnabled(False)
         self.timeedit_end.setEnabled(False)
@@ -393,30 +395,47 @@ class Ui_Form(object):
         self.le_sync_time_delay.setText(str(default_timedelay))
         self.le_sync_time_delay.setValidator(QtGui.QIntValidator())
 
+        # Stat
+        self.sort_stat = False
+
     def custom_control_code(self):
         """Tab File Name """
-        self.btn_file_folder.clicked.connect(self.btn_folder_onclick)
-        self.btn_tab1_file_del.clicked.connect(self.btn_tab1_file_del_onclick)
+        self.btn_tab1_file_folder.clicked.connect(self.btn_folder_onclick)
 
+        self.btn_tab1_file_up.clicked.connect(self.btn_tab1_file_up_onclick)
+        self.btn_tab1_file_down.clicked.connect(self.btn_tab1_file_down_onclick)
+        self.btn_tab1_file_del.clicked.connect(self.btn_tab1_file_del_onclick)
+        self.btn_tab1_file_sort.clicked.connect(self.btn_tab1_file_sort_onclick)
+
+        self.btn_caption_up.clicked.connect(self.btn_tab1_caption_up_onclick)
+        self.btn_caption_down.clicked.connect(self.btn_tab1_caption_down_onclick)
         self.btn_tab1_caption_del.clicked.connect(self.btn_tab1_caption_del_onclick)
+        self.btn_tab1_caption_sort.clicked.connect(self.btn_tab1_caption_sort_onclick)
+        self.btn_tab1_start.clicked.connect(self.btn_tab1_start_onclick)
 
         """Tab Caption Sync"""
-        self.btn_sync_folder.clicked.connect(self.btn_folder_onclick)
-        self.btn_sync_start.clicked.connect(self.btn_sync_start_onclick)
-        self.rbtn_all_change.clicked.connect(self.rbtn_all_change_onclick)
-        self.rbtn_specify_Change.clicked.connect(self.rbtn_specify_change_onclick)
+        self.btn_tab2_sync_folder.clicked.connect(self.btn_folder_onclick)
+        self.btn_tab2_sync_start.clicked.connect(self.btn_tab2_sync_start_onclick)
+        self.rbtn_tab2_all_change.clicked.connect(self.rbtn_tab2_all_change_onclick)
+        self.rbtn_tab2_specify_Change.clicked.connect(self.rbtn_tab2_specify_Change_onclick)
         self.btn_tab2_caption_del.clicked.connect(self.btn_tab2_caption_del_onclick)
+        self.btn_tab2_sync_restore.clicked.connect(self.btn_tab2_sync_restore_onclick)
 
-    def btn_folder_onclick(self):
-        folder = str(QtWidgets.QFileDialog.getExistingDirectory(None, "Select Directory"))
+    def btn_folder_onclick(self, url=None):
         self.listwidget_sync_caption.clear()
         self.listwidget_caption.clear()
         self.listwidget_file.clear()
 
-        self.le_file_location.setText(folder)
-        self.le_sync_location.setText(folder)
+        if not url:
+            folder = str(QtWidgets.QFileDialog.getExistingDirectory(None, "Select Directory"))
+            self.le_file_location.setText(folder)
+            self.le_sync_location.setText(folder)
+
         try:
-            os.chdir(folder)
+            if url:
+                os.chdir(url)
+            else:
+                os.chdir(folder)
             file_list = os.listdir()
             for file in file_list:
                 _, ext = os.path.splitext(file)
@@ -431,53 +450,82 @@ class Ui_Form(object):
             pass
         selected_listitem(self.listwidget_sync_caption, test_item_name)
 
-    def btn_sync_start_onclick(self):
-        if self.rbtn_all_change.isChecked():
+    def btn_tab2_sync_start_onclick(self):
+        if self.rbtn_tab2_all_change.isChecked():
             timedelay = int(self.le_sync_time_delay.text())
-            for listitem in self.listwidget_sync_caption.selectedItems():
-                print(listitem.text())
-                cc.main_cc(listitem.text(), timedelay, False)
-                print("Clear Start Event")
-        elif self.rbtn_specify_Change.isChecked():
-            start_time = tl.time_to_msec(self.timeedit_start.time().toPyTime())
-            end_time = tl.time_to_msec(self.timeedit_end.time().toPyTime())
+
+            # document : https://doc.qt.io/qt-5/qlistwidget.html#selectedItems
+            # for listitem in self.listwidget_sync_caption.selectedItems():
+            # main_cc(listitem.text(), timedelay, False)
+
+            for listitem in listwidget_all_item(self.listwidget_sync_caption):
+                print(listitem)
+                main_cc(listitem, timedelay, log_stat)
+
+        elif self.rbtn_tab2_specify_Change.isChecked():
+            start_time = time_to_msec(self.timeedit_start.time().toPyTime())
+            end_time = time_to_msec(self.timeedit_end.time().toPyTime())
 
             timedelay = int(self.le_sync_time_delay.text())
-            for listitem in self.listwidget_sync_caption.selectedItems():
-                print(listitem.text())
-                cc.main_cc(listitem.text(), timedelay, False, start_time, end_time)
-                print("Clear Start Event")
-
-    def rbtn_all_change_onclick(self):
-        print("rbtn all Change on Click")
-        self.timeedit_start.setEnabled(False)
-        self.timeedit_end.setEnabled(False)
-
-    def rbtn_specify_change_onclick(self):
-        print("rbtn specify Change on Click")
-        self.timeedit_start.setEnabled(True)
-        self.timeedit_end.setEnabled(True)
+            for listitem in listwidget_all_item(self.listwidget_sync_caption):
+                print(listitem)
+                main_cc(listitem, timedelay, log_stat, start_time, end_time)
 
     def btn_tab1_file_del_onclick(self):
         listwidget_del(self.listwidget_file)
 
+    def btn_tab1_file_up_onclick(self):
+        listwidget_up(self.listwidget_file)
+
+    def btn_tab1_file_down_onclick(self):
+        listwidget_down(self.listwidget_file)
+
+    def btn_tab1_file_sort_onclick(self):
+        listwidget_sort(self.listwidget_file)
+
+    def btn_tab1_caption_up_onclick(self):
+        listwidget_up(self.listwidget_caption)
+
+    def btn_tab1_caption_down_onclick(self):
+        listwidget_down(self.listwidget_caption)
+
     def btn_tab1_caption_del_onclick(self):
         listwidget_del(self.listwidget_caption)
+
+    def btn_tab1_caption_sort_onclick(self):
+        listwidget_sort(self.listwidget_caption)
+
+    def rbtn_tab2_all_change_onclick(self):
+        self.timeedit_start.setEnabled(False)
+        self.timeedit_end.setEnabled(False)
+
+    def rbtn_tab2_specify_Change_onclick(self):
+        self.timeedit_start.setEnabled(True)
+        self.timeedit_end.setEnabled(True)
 
     def btn_tab2_caption_del_onclick(self):
         listwidget_del(self.listwidget_sync_caption)
 
+    def btn_tab2_sync_restore_onclick(self):
+        pass
 
-# TODO Delete 사용시 이후 아이템을 Selete한 상태로 만들어야함
+    def btn_tab1_start_onclick(self):
+        file_list = listwidget_all_item(self.listwidget_file)
+        subtitle_list = listwidget_all_item(self.listwidget_caption)
+        print(file_list)
+        print(subtitle_list)
+        for i in range(len(file_list)):
+            filename_change(subtitle_list[i], file_list[i])
+        self.btn_folder_onclick(self.le_file_location.text())
+
+
 def listwidget_del(listwidget):
-    delete_row = []
+    delete_row = [listitem.row() for listitem in listwidget.selectedIndexes()]
 
-    # TODO For 2번사용한것 수정필요
-    for listitem in listwidget.selectedIndexes():
-        delete_row.append(listitem.row())
     delete_row.sort(reverse=True)
     for row in delete_row:
         listwidget.takeItem(row)
+        listwidget.setCurrentRow(row)
 
 
 def selected_listitem(listwidget, selected_item):
@@ -487,14 +535,52 @@ def selected_listitem(listwidget, selected_item):
             item.setSelected(True)
 
 
-if __name__ == "__main__":
-    import sys
+def listwidget_up(listwidget):
+    delete_row = [listitem.row() for listitem in listwidget.selectedIndexes()]
+    append_text = [listitem.text() for listitem in listwidget.selectedItems()]
 
+    delete_row.sort(reverse=True)
+    for row in delete_row:
+        listwidget.takeItem(row)
+
+    delete_row.sort()
+    for i in range(len(delete_row)):
+        listwidget.insertItem(delete_row[i] - 1, append_text[i])
+        listwidget.setCurrentRow(delete_row[i] - 1)
+
+
+def listwidget_down(listwidget):
+    delete_row = [listitem.row() for listitem in listwidget.selectedIndexes()]
+    append_text = [listitem.text() for listitem in listwidget.selectedItems()]
+
+    delete_row.sort(reverse=True)
+    for row in delete_row:
+        listwidget.takeItem(row)
+
+    delete_row.sort()
+    for i in range(len(delete_row)):
+        listwidget.insertItem(delete_row[i] + 1, append_text[i])
+        listwidget.setCurrentRow(delete_row[i] + 1)
+
+
+def listwidget_sort(listwidget):
+    # TODO 전역변수로 선언하지 않도록
+    global sort_stat
+
+    # document : https://doc.qt.io/qt-5/qt.html#SortOrder-enum
+    listwidget.sortItems(sort_stat)
+    sort_stat = not sort_stat
+
+
+def listwidget_all_item(listwidget):
+    return [listwidget.item(i).text() for i in range(listwidget.count())]
+
+
+if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     Form = QtWidgets.QWidget()
     ui = Ui_Form()
     ui.setupUi(Form)
-    # Form.show()
     qtmodern.styles.light(app)
     mw = qtmodern.windows.ModernWindow(Form)
     mw.show()
