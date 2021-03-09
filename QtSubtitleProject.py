@@ -4,8 +4,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import qtmodern.styles
 import qtmodern.windows
 
-from myNote.SubChanger.Qtlib.sub_change import *
-from myNote.SubChanger.Qtlib.time_lib import *
+from Qtlib.sub_change import *
+from Qtlib.time_lib import *
 
 movie_list = [".avi", ".mkv", ".mp4"]
 caption_list = [".smi", ".ass"]

@@ -11,7 +11,7 @@ import os
 from PyQt5 import QtCore, QtGui, QtWidgets
 import qtmodern.styles
 import qtmodern.windows
-import myNote.movie_caption_changer.caption_change as cc
+import Qtlib.sub_change as cc
 
 movie_list = [".avi", ".mkv", ".mp4"]
 caption_list = [".smi", ".ass"]
