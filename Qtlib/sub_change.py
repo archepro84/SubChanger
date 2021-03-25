@@ -55,6 +55,7 @@ def sync_ass(file_name, delay, start_time=None, end_time=None):
                 change_str.append(td.strftime(r"%H:%M:%S.%f")[1:-4])
 
             change_data = []
+            # TODO iter 형식의 반복문 수정
             iter_data = iter(change_str)
             for i, insert_data in enumerate(m.groups()):
                 if i == 1 or i == 3:
