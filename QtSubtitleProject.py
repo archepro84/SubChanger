@@ -18,7 +18,7 @@ default_location = r"C:\PythonProject\myNote\SubChanger\caption_file"
 
 test_item_name = ["페아포 1화.ass", "페아포 10화.ass", "페아포 11화.ass", "페아포 12화.ass"]
 
-log_stat = False
+log_stat = True
 sort_stat = False
 
 # document : https://docs.python.org/ko/3/reference/import.html#__package__
@@ -26,6 +26,7 @@ sort_stat = False
 
 try:
     os.chdir(default_location)
+
 except:
     pass
 

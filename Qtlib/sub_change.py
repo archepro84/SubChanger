@@ -78,13 +78,16 @@ def sync_ass(file_name, delay, start_time=None, end_time=None):
 def sync_smi(file_name, delay, start_time=None, end_time=None):
     f, pre_tell, read_data = file_open_utf(file_name)
     while read_data:
-        p = re.compile(r'(<Sync Start=)(\d+)(.+)')
+        # TODO 대소문자 구분 없이 설정
+        p = re.compile(r'(<SYNC Start=)(\d+)(.+)')
+        # p = re.compile(r'(<Sync Start=)(\d+)(.+)')
         m = p.match(read_data)
         try:
             file_time = int(m.group(2))
             change_time = file_time + delay
             if change_time < 0:
                 change_time = 0
+
 
             if start_time and end_time:
                 if not (start_time <= file_time <= end_time):
@@ -99,9 +102,11 @@ def sync_smi(file_name, delay, start_time=None, end_time=None):
                 else:
                     change_data.append(insert_data)
 
+
             result_str = ''.join(map(str, change_data))
             f.seek(pre_tell, 0)
             f.write(result_str)
+
 
         except AttributeError:
             pass
@@ -147,4 +152,5 @@ def main_cc(file, delay, logstat, time_start=None, time_end=None):
             if ext == ".ass":
                 sync_ass(file, delay, time_start, time_end)
             elif ext == ".smi":
+                print("ext : smi")
                 sync_smi(file, delay, time_start, time_end)
