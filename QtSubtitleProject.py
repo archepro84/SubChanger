@@ -23,6 +23,7 @@ sort_stat = False
 
 # document : https://docs.python.org/ko/3/reference/import.html#__package__
 
+# FIXME : 자막의 갯수 보다 파일의 갯수가 더 많을 경우 강제 종료되는 오류
 
 try:
     os.chdir(default_location)
